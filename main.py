@@ -16,6 +16,7 @@
 import pandas as pd
 import numpy as np
 from tkinter import Tk, Label, PhotoImage
+from tkinter.ttk import Combobox
 
 #New York Times Data 
 NYT_US = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us.csv'
@@ -53,7 +54,28 @@ def startupScreen():
     main_image_lbl.image = main_image
     main_image_lbl.place(relx=0.04, rely=0.2)
 
+    #Select Data
+    lbl_combo = Label(startWindow, text="Select Data:", font=("Times New Roman Bold", 18),bg=DARK_BURGANDY,fg='white')
+    lbl_combo.place(relx=0.55,rely=0.4)
+    comboValues = ['Select Data','USA NATIONAL DATA','USA STATES DATA','USA COUNTIES DATA']
+    combo = Combobox(startWindow,values=comboValues,state="readonly",width=35)
+    combo.place(relx=0.55,rely=0.5)
+    combo.current(0)
+    def comboFunc(event):
+        if combo.get() == comboValues[1]:
+            startWindow.destroy()
+            loadingScreen("National")
+        elif combo.get() == comboValues[2]:
+            startWindow.destroy()
+            loadingScreen("State")
+        elif combo.get() == comboValues[3]:
+            startWindow.destroy()
+            loadingScreen("County")
+    combo.bind("<<ComboboxSelected>>", comboFunc)
     startWindow.mainloop()
+
+def loadingScreen(graphType):
+    pass
 
 if __name__ == "__main__":
     startupScreen()
