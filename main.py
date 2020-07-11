@@ -53,5 +53,7 @@ def startupScreen():
     main_image_lbl.image = main_image
     main_image_lbl.place(relx=0.04, rely=0.2)
 
+    startWindow.mainloop()
+
 if __name__ == "__main__":
     startupScreen()
