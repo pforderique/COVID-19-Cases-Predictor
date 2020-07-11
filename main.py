@@ -75,6 +75,41 @@ def startupScreen():
     startWindow.mainloop()
 
 def loadingScreen(graphType):
+    #start loading page
+    loadingWindow = Tk()
+    loadingWindow.title('Data Collection Page')
+    loadingWindow.geometry('385x50')
+    loadingWindow.config(bg=DARK_BURGANDY)
+    icon = PhotoImage(file ='images\COVID-19-virus-white.png')
+    loadingWindow.iconphoto(False, icon)
+
+    #title
+    titleLabel = Label(loadingWindow, text="Loading Data...", font=("Times New Roman Bold", 14),bg=DARK_BURGANDY,fg='white')
+    titleLabel.grid(column = 0, row=0, padx=12,pady=12)
+    #shows FIRST, then tries to load in the data!
+    titleLabel.wait_visibility()
+    titleLabel.update_idletasks()
+    #make df
+    if graphType == "National":
+        global main_df
+        main_df = createDataFrame("National")
+        loadingWindow.destroy()
+        graphScreen(main_df, "National")
+    elif graphType == "State":
+        global state_df
+        state_df = createDataFrame("State")
+        loadingWindow.destroy()
+        graphScreen(state_df, "State")
+    elif graphType == "County":
+        global county_df
+        county_df = createDataFrame("County")
+        loadingWindow.destroy()
+        graphScreen(county_df, "County")
+
+def graphScreen(df, graphType):
+    pass
+
+def createDataFrame(data):
     pass
 
 if __name__ == "__main__":
