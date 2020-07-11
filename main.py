@@ -34,6 +34,9 @@ DARK_GREY = '#454545'
 main_df = None # holds USA or individual df of choice
 state_df = None #holds ALL states
 county_df = None #hold ALL counties
+POP_NORM_NAT = 100000 #population normal for cases
+POP_NORM_STATE = 10000
+POP_NORM_COUNTY = 1000
 
 def startupScreen():
     #window
@@ -107,10 +110,40 @@ def loadingScreen(graphType):
         graphScreen(county_df, "County")
 
 def graphScreen(df, graphType):
-    pass
+    graphWindow = Tk()
+    graphWindow.title('COVID-19 Tracker')
+    graphWindow.geometry('1220x700')
+    graphWindow.config(bg=DARK_BURGANDY)
+    icon = PhotoImage(file ='images\COVID-19-virus.png')
+    graphWindow.iconphoto(False, icon)
+
+    #labels
+    lbl_main = Label(text=graphType+" Data", font=("Times New Roman",42),bg=DARK_BURGANDY,fg='white',padx=0)
+    lbl_main.place(relx=0.05,rely=0.03)
+    #show no chart initially
+    noChart = PhotoImage(file ='images/NoChartImage.png')
+    noChartLbl = Label(image=noChart)
+    noChartLbl.image = noChart #DOING THIS keeps a reference to the tkinter object - now the picture shows!
+    noChartLbl.place(relx=0.05, rely=0.2)
 
 def createDataFrame(data):
-    pass
+    if data == "National":
+        df = pd.read_csv(NYT_US, error_bad_lines=False)
+        df['time_since_Jan21'] = df.index
+        #scale down cases
+        df['cases'] /= POP_NORM_NAT #cases = new cases
+        return df
+    elif data == "State":
+        df = pd.read_csv(NYT_states, error_bad_lines=False)
+        #scale down cases 
+        df['cases'] /= POP_NORM_STATE #cases = new cases
+        return df
+    elif data == "County":
+        df = pd.read_csv(NYT_counties, error_bad_lines=False)
+        #scale down cases 
+        df['cases'] /= POP_NORM_COUNTY #cases = new cases
+        return df
+    return None
 
 if __name__ == "__main__":
     startupScreen()
