@@ -262,6 +262,13 @@ def graphScreen(df, graphType):
                 combo_county2.bind("<<ComboboxSelected>>", comboFunc_county_county)
         combo_county1.bind("<<ComboboxSelected>>", comboFunc_county_state)
 
+    #backbutton to return to home screen       
+    def returnHome():
+        graphWindow.destroy()
+        startupScreen()
+    btn_back = Button(graphWindow, text="Return Home",command=returnHome, bg=LIGHT_BEIGE,fg=DARK_GREY,font=("Times New Roman", 18))
+    btn_back.place(relx=0.86,rely=0.84)
+
 def createDataFrame(data):
     if data == "National":
         df = pd.read_csv(NYT_US, error_bad_lines=False)
