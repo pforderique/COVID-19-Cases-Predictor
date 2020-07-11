@@ -13,7 +13,7 @@
 
 import pandas as pd
 import numpy as np
-from tkinter import Tk, Label, PhotoImage
+from tkinter import Tk, Label, PhotoImage, Button, BOTH, TOP, NORMAL, DISABLED
 from tkinter.ttk import Combobox
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
@@ -130,6 +130,14 @@ def graphScreen(df, graphType):
     noChartLbl = Label(image=noChart)
     noChartLbl.image = noChart #DOING THIS keeps a reference to the tkinter object - now the picture shows!
     noChartLbl.place(relx=0.05, rely=0.2)
+
+    #regression 
+    lbl_regr = Label(text="Run Regression Model:", font=("Times New Roman",20),bg=DARK_BURGANDY,fg='white')
+    lbl_regr.place(relx=0.71,rely=0.22)
+    def runRegression():
+        pass
+    btn_regression = Button(graphWindow, text="Run",command=runRegression, bg=LIGHT_BEIGE,fg=DARK_GREY,font=("Times New Roman", 18))
+    btn_regression.place(relx=0.8,rely=0.3)
     
     #chart display logic
     global GRAPH_TITLE
@@ -159,6 +167,7 @@ def graphScreen(df, graphType):
         combo_state.place(relx=0.15,rely=0.165)
         combo_state.current(0)
         def comboFunc_state(event):
+            btn_regression.config(state=NORMAL,bg=LIGHT_BEIGE,fg=DARK_GREY) #re-enables regression button
             myState = combo_state.get()
             if myState != "Select a State":
                 global main_df
@@ -195,6 +204,7 @@ def graphScreen(df, graphType):
                 toolbar = NavigationToolbar2Tk(canvas, graphWindow)
                 toolbar.update()
         combo_state.bind("<<ComboboxSelected>>", comboFunc_state)
+    
 
 def createDataFrame(data):
     if data == "National":
