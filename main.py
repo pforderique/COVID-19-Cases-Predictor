@@ -15,6 +15,8 @@ import pandas as pd
 import numpy as np
 from tkinter import Tk, Label, PhotoImage
 from tkinter.ttk import Combobox
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 
 #New York Times Data 
 NYT_US = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us.csv'
@@ -35,6 +37,8 @@ county_df = None #hold ALL counties
 POP_NORM_NAT = 100000 #population normal for cases
 POP_NORM_STATE = 10000
 POP_NORM_COUNTY = 1000
+INITIAL_DATE = ''
+GRAPH_TITLE = ''
 
 def startupScreen():
     #window
@@ -123,6 +127,26 @@ def graphScreen(df, graphType):
     noChartLbl = Label(image=noChart)
     noChartLbl.image = noChart #DOING THIS keeps a reference to the tkinter object - now the picture shows!
     noChartLbl.place(relx=0.05, rely=0.2)
+    
+    #chart display logic
+    global GRAPH_TITLE
+    global INITIAL_DATE
+    if graphType == "National":
+        INITIAL_DATE = "2020-Jan-21"
+        df['days_since_'+INITIAL_DATE] = df.index
+        #creating initial plot
+        figure = Figure(figsize=(8,5.8), dpi=90)
+        figure.patch.set_facecolor(LIGHT_BEIGE)
+        ax = figure.add_subplot(111)
+        ax.scatter(df['days_since_'+INITIAL_DATE],df['cases'],color='blue')
+        GRAPH_TITLE = "USA COVID-19 Cases"
+        ax.set_title(GRAPH_TITLE)
+        ax.set_xlabel('Days since January 21st')
+        ax.set_ylabel('Cases per '+str(POP_NORM_NAT))
+        #embedding
+        canvas = FigureCanvasTkAgg(figure, graphWindow)
+        canvas.draw()
+        canvas.get_tk_widget().place(relx=0.05,rely=0.2)  
 
 def createDataFrame(data):
     if data == "National":
