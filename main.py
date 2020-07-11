@@ -6,9 +6,7 @@
 # @author Piero Orderique
 #
 # TODO:
-#   1) Add combo functionality for state and local level.
-#   2) Figure out how to display graphs AND add a WORKING navigation bar... first 2 attempts failed
-#   3) Implement the machine learning part into program
+#   1) Clean up code to make presentable.
 ##########################################
 
 import pandas as pd
@@ -18,6 +16,7 @@ from tkinter.ttk import Combobox
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
 from sklearn.preprocessing import PolynomialFeatures
+from sklearn.metrics import r2_score
 from sklearn import linear_model as lm
 
 #New York Times Data 
@@ -168,6 +167,20 @@ def graphScreen(df, graphType):
         yy = clf.intercept_[0]
         for n in range(DEGREE+1):
             yy+= clf.coef_[0][n]*np.power(XX, n)
+
+        #Evaluation
+        xtest_poly = poly.fit_transform(xtest)
+        ytest_predict = clf.predict(xtest_poly)
+        eval_lbl  = Label(text="Regression Data: ",font=("Times New Roman",18),bg=DARK_BURGANDY,fg="white",padx=3,pady=3)
+        eval_lbl1 = Label(text="Degree Chosen: %i" % DEGREE,font=("Times New Roman",15),bg=DARK_BURGANDY,fg="white",padx=3,pady=3)
+        eval_lbl2 = Label(text="Mean absolute error: %.2f" % np.mean(np.absolute(ytest_predict - ytest)),font=("Times New Roman",15),bg=DARK_BURGANDY,fg="white",padx=3,pady=3)
+        eval_lbl3 = Label(text="Residual sum of squares (MSE): %.2f" % np.mean((ytest_predict - ytest) ** 2),font=("Times New Roman",15),bg=DARK_BURGANDY,fg="white",padx=3,pady=3)
+        eval_lbl4 = Label(text="R2-score: %.2f" % r2_score(ytest_predict , ytest),font=("Times New Roman",15),bg=DARK_BURGANDY,fg="white",padx=3,pady=3)
+        eval_lbl.place(relx=0.7, rely=0.52)
+        eval_lbl1.place(relx=0.7, rely=0.58)
+        eval_lbl2.place(relx=0.7, rely=0.62)
+        eval_lbl3.place(relx=0.7, rely=0.66)
+        eval_lbl4.place(relx=0.7, rely=0.7)
 
         #plot regression model
         figure = Figure(figsize=(8,5.8), dpi=90)
