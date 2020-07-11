@@ -1,13 +1,11 @@
-##########################################
-# COVID-19 Cases Predictor 
-#
-# Purpose: To show COVID-19 cases and predict using 
-#           regression models
-# @author Piero Orderique
-#
-# TODO:
-#   1) Clean up code to make presentable.
-##########################################
+##############################################################
+##                  COVID-19 Cases Predictor                ##
+##                                                          ##
+## Purpose: To show COVID-19 cases and predict using        ##
+##           regression models                              ##
+## @author Piero Orderique                                  ##
+##                                                          ##
+##############################################################
 
 import pandas as pd
 import numpy as np
@@ -23,8 +21,6 @@ from sklearn import linear_model as lm
 NYT_US = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us.csv'
 NYT_states = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-states.csv'
 NYT_counties = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us-counties.csv'
-
-print("\nApp Started.\n")
 
 #theme colors
 BURGANDY = '#630019'
@@ -361,4 +357,5 @@ def createDataFrame(data):
     return None
 
 if __name__ == "__main__":
+    print("\nApp Started.\n")
     startupScreen()
