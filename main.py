@@ -17,6 +17,8 @@ from tkinter import Tk, Label, PhotoImage, Button, BOTH, TOP, NORMAL, DISABLED
 from tkinter.ttk import Combobox
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg, NavigationToolbar2Tk
+from sklearn.preprocessing import PolynomialFeatures
+from sklearn import linear_model as lm
 
 #New York Times Data 
 NYT_US = 'https://raw.githubusercontent.com/nytimes/covid-19-data/master/us.csv'
@@ -135,7 +137,64 @@ def graphScreen(df, graphType):
     lbl_regr = Label(text="Run Regression Model:", font=("Times New Roman",20),bg=DARK_BURGANDY,fg='white')
     lbl_regr.place(relx=0.71,rely=0.22)
     def runRegression():
-        pass
+        btn_regression.config(state=DISABLED,bg='grey')
+        global main_df
+        global INITIAL_DATE
+        global GRAPH_TITLE
+
+        #creating the training and testing data sets 
+        mask = np.random.rand(len(main_df)) < 0.8
+        train = main_df[mask]
+        test = main_df[~mask]
+
+        #training and testing arrays
+        xtrain = np.asanyarray(train[['days_since_'+INITIAL_DATE]])
+        ytrain = np.asanyarray(train[['cases']])
+        xtest = np.asanyarray(test[['days_since_'+INITIAL_DATE]])
+        ytest = np.asanyarray(test[['cases']])
+             
+        #We specifiy the degree for our model
+        DEGREE = 4 #getBestDegree(train_x, train_y, test_x, test_y) #--FAILED METHOD: Best degree is always the largest in range
+        poly = PolynomialFeatures(degree=DEGREE)
+        xtrain_poly = poly.fit_transform(xtrain) 
+
+        #fit_transform makes our coeffecients look like they're from a mulitple linear regression, so we use a linear regression!
+        clf = lm.LinearRegression()
+        y_fit = clf.fit(xtrain_poly, ytrain)
+
+        #create data
+        extendedDomain = len(main_df)*1.2 #plot 1/5 more of available values
+        XX = np.arange(0.0, extendedDomain, 0.1) 
+        yy = clf.intercept_[0]
+        for n in range(DEGREE+1):
+            yy+= clf.coef_[0][n]*np.power(XX, n)
+
+        #plot regression model
+        figure = Figure(figsize=(8,5.8), dpi=90)
+        figure.patch.set_facecolor(LIGHT_BEIGE)
+        ax = figure.add_subplot(111)
+        ax.plot(XX, yy, '-r' )
+        ax.scatter(main_df['days_since_'+INITIAL_DATE], main_df['cases'], color='blue')
+        ax.set_title(GRAPH_TITLE)
+        ax.set_xlabel('Days since '+INITIAL_DATE)
+        if graphType == "National": 
+            ax.set_ylabel('Cases per '+str(POP_NORM_NAT))
+        elif graphType == "State":
+            ax.set_ylabel('Cases per '+str(POP_NORM_STATE))
+        elif graphType == "County":
+            ax.set_ylabel('Cases per '+str(POP_NORM_COUNTY))
+        #embedding
+        canvas = FigureCanvasTkAgg(figure, graphWindow)
+        canvas.draw()
+        canvas.get_tk_widget().place(relx=0.05,rely=0.2)
+        #toolbar
+        global toolbar
+        try:
+            toolbar.destroy()            
+        except:
+            pass
+        toolbar = NavigationToolbar2Tk(canvas, graphWindow)
+        toolbar.update()
     btn_regression = Button(graphWindow, text="Run",command=runRegression, bg=LIGHT_BEIGE,fg=DARK_GREY,font=("Times New Roman", 18))
     btn_regression.place(relx=0.8,rely=0.3)
     
