@@ -6,11 +6,9 @@
 # @author Piero Orderique
 #
 # TODO:
-#   1) research more about tkinter. 
-#   2) Practice reading in data from google on jupyter
-#   3) Start building basic startup GUI
-#   4) Figure out how to display graphs
-#   5) Implement the machine learning part into program
+#   1) Add combo functionality for state and local level.
+#   2) Figure out how to display graphs
+#   3) Implement the machine learning part into program
 ##########################################
 
 import pandas as pd
