@@ -204,7 +204,63 @@ def graphScreen(df, graphType):
                 toolbar = NavigationToolbar2Tk(canvas, graphWindow)
                 toolbar.update()
         combo_state.bind("<<ComboboxSelected>>", comboFunc_state)
-    
+    elif graphType == "County":
+        #choosing state
+        lbl2 = Label(text="Choose Display:", font=("Times New Roman",12),bg=LIGHT_BEIGE,fg=DARK_GREY)
+        lbl2.place(relx=0.05,rely=0.16)
+        comboVals_county_state = ['Select a State']+sorted(df.state.unique().tolist())
+        combo_county1 = Combobox(graphWindow,values=comboVals_county_state,state="readonly",width=32)
+        combo_county1.place(relx=0.15,rely=0.165)
+        combo_county1.current(0)
+        def comboFunc_county_state(event):
+            myState = combo_county1.get()
+            if myState != "Select a State":
+                global main_df
+                main_df = None
+                main_df = df[df.state == myState]
+                comboVals_county_county = ['Select a County']+sorted(main_df.county.unique().tolist())
+                combo_county2 = Combobox(graphWindow,values=comboVals_county_county,state="readonly",width=32)
+                combo_county2.place(relx=0.35,rely=0.165)
+                combo_county2.current(0)
+                def comboFunc_county_county(event):
+                    btn_regression.config(state=NORMAL,bg=LIGHT_BEIGE,fg=DARK_GREY) #re-enables regression button
+                    myCounty = combo_county2.get()
+                    if myCounty != "Select a County":
+                        global ax
+                        global INITIAL_DATE
+                        global GRAPH_TITLE
+                        global main_df
+                        ax = None
+                        main_df = None
+                        main_df = df[df.state == myState]
+                        main_df = main_df[main_df.county == myCounty] 
+                        INITIAL_DATE = main_df['date'].iloc[0] # not all states started recording on same date
+                        main_df['days_since_'+INITIAL_DATE] = list(range(0, len(main_df)))
+                        lbl_main.config(text=myCounty+', '+myState+' Data') #change label text
+                        print(main_df)
+                        #creating initial plot
+                        figure = Figure(figsize=(8,5.8), dpi=90)
+                        figure.patch.set_facecolor(LIGHT_BEIGE)
+                        ax = figure.add_subplot(111)
+                        ax.scatter(main_df['days_since_'+INITIAL_DATE],main_df['cases'],color='blue')
+                        GRAPH_TITLE = myCounty+" COVID-19 Cases"
+                        ax.set_title(GRAPH_TITLE)
+                        ax.set_xlabel('Days since '+INITIAL_DATE)
+                        ax.set_ylabel('Cases per '+str(POP_NORM_COUNTY))
+                        #embedding
+                        canvas = FigureCanvasTkAgg(figure, graphWindow)
+                        canvas.draw()
+                        canvas.get_tk_widget().place(relx=0.05,rely=0.2)
+                        #toolbar
+                        global toolbar
+                        try:
+                            toolbar.destroy()
+                        except:
+                            pass
+                        toolbar = NavigationToolbar2Tk(canvas, graphWindow)
+                        toolbar.update()
+                combo_county2.bind("<<ComboboxSelected>>", comboFunc_county_county)
+        combo_county1.bind("<<ComboboxSelected>>", comboFunc_county_state)
 
 def createDataFrame(data):
     if data == "National":
