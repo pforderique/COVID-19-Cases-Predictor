@@ -7,7 +7,7 @@
 #
 # TODO:
 #   1) Add combo functionality for state and local level.
-#   2) Figure out how to display graphs
+#   2) Figure out how to display graphs AND add a WORKING navigation bar... first 2 attempts failed
 #   3) Implement the machine learning part into program
 ##########################################
 
@@ -147,6 +147,16 @@ def graphScreen(df, graphType):
         canvas = FigureCanvasTkAgg(figure, graphWindow)
         canvas.draw()
         canvas.get_tk_widget().place(relx=0.05,rely=0.2)  
+    elif graphType == "State":
+        #choosing state
+        lbl2 = Label(text="Choose Display:", font=("Times New Roman",12),bg=LIGHT_BEIGE,fg=DARK_GREY)
+        lbl2.place(relx=0.05,rely=0.16)
+        comboValues_state = ['Select a State']+sorted(df.state.unique().tolist())
+        combo_state = Combobox(graphWindow,values=comboValues_state,state="readonly",width=32)
+        combo_state.place(relx=0.15,rely=0.165)
+        combo_state.current(0)
+        def combo_state(event):
+            pass
 
 def createDataFrame(data):
     if data == "National":
