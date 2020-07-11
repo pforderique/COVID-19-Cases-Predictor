@@ -34,6 +34,9 @@ DARK_GREY = '#454545'
 main_df = None # holds USA or individual df of choice
 state_df = None #holds ALL states
 county_df = None #hold ALL counties
+canvas = None
+toolbar = None
+ax = None 
 POP_NORM_NAT = 100000 #population normal for cases
 POP_NORM_STATE = 10000
 POP_NORM_COUNTY = 1000
@@ -155,8 +158,43 @@ def graphScreen(df, graphType):
         combo_state = Combobox(graphWindow,values=comboValues_state,state="readonly",width=32)
         combo_state.place(relx=0.15,rely=0.165)
         combo_state.current(0)
-        def combo_state(event):
-            pass
+        def comboFunc_state(event):
+            myState = combo_state.get()
+            if myState != "Select a State":
+                global main_df
+                global ax
+                global INITIAL_DATE
+                global GRAPH_TITLE
+                ax = None
+                main_df = None
+                main_df = df[df.state == myState]
+                INITIAL_DATE = main_df['date'].iloc[0] # not all states started recording on same date
+                main_df['days_since_'+INITIAL_DATE] = list(range(0, len(main_df)))
+                lbl_main.config(text=myState+' Data') #change label text
+                #creating initial plot
+                figure = Figure(figsize=(8,5.8), dpi=90)
+                figure.patch.set_facecolor(LIGHT_BEIGE)
+                ax = figure.add_subplot(111)
+                ax.scatter(main_df['days_since_'+INITIAL_DATE],main_df['cases'],color='blue')
+                GRAPH_TITLE = myState+" COVID-19 Cases"
+                ax.set_title(GRAPH_TITLE)
+                ax.set_xlabel('Days since '+INITIAL_DATE)
+                ax.set_ylabel('Cases per '+str(POP_NORM_STATE))
+                #embedding
+                global canvas
+                canvas = None
+                canvas = FigureCanvasTkAgg(figure, graphWindow)
+                canvas.draw()
+                canvas.get_tk_widget().place(relx=0.05,rely=0.2)
+                #toolbar
+                global toolbar
+                try:
+                    toolbar.destroy()
+                except:
+                    pass
+                toolbar = NavigationToolbar2Tk(canvas, graphWindow)
+                toolbar.update()
+        combo_state.bind("<<ComboboxSelected>>", comboFunc_state)
 
 def createDataFrame(data):
     if data == "National":
