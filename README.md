@@ -1,4 +1,4 @@
-# Sine Wave Visualizer Program
+# COVID-19 Cases Predictor
 Creator: Piero Orderique
 
 ![OrderiqueStudios](https://pforderique.github.io/images/saved-images/orderique_studios_logo_text_smallerer.png)
