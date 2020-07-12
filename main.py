@@ -1,11 +1,11 @@
-##############################################################
-##                  COVID-19 Cases Predictor                ##
-##                                                          ##
-## Purpose: To show COVID-19 cases and predict using        ##
-##           regression models                              ##
-## @author Piero Orderique                                  ##
-##                                                          ##
-##############################################################
+##################################################################################
+##                             COVID-19 Cases Predictor                         ##
+##                                                                              ##
+## Purpose: To show COVID-19 cases and predict casez using regression models    ##
+##                                                                              ##
+## @author Piero Orderique                                                      ##
+##                                                                              ##
+##################################################################################
 
 import pandas as pd
 import numpy as np
@@ -356,6 +356,5 @@ def createDataFrame(data):
         return df
     return None
 
-if __name__ == "__main__":
-    print("\nApp Started.\n")
-    startupScreen()
+print("\nApp Started.\n")
+startupScreen()
