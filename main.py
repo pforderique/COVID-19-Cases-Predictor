@@ -1,7 +1,7 @@
 ##################################################################################
 ##                             COVID-19 Cases Predictor                         ##
 ##                                                                              ##
-## Purpose: To show COVID-19 cases and predict casez using regression models    ##
+## Purpose: To show COVID-19 cases and predict cases using regression models    ##
 ##                                                                              ##
 ## @author Piero Orderique                                                      ##
 ##                                                                              ##
